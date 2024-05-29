@@ -2,23 +2,28 @@
 require "optparse"
 
 # Custom libraries
-require "./module/log.rb"
-require "./module/app-config.rb"
+require_relative "./log.rb"
+require_relative "./app-config.rb"
+require_relative "./session-config.rb"
 
 ##
 # @class OptParser
 # Class parsing command-line options
 #
-module OptParser
+class OptParser
   def self.parse
     options = {}
 
-    parser = OptParser.new do |opts|
+    parser = OptionParser.new do |opts|
       opts.banner = "Usage: main.rb [options]"
+
+      opts.on("--model-repository=PATH", "Specify the model repository path") do |path|
+        SessionConfig.model_repository = path
+      end
 
       # Enable debug logs
       opts.on("-d", "--debug", "Show debug logs") do
-        WorkerLog.logger_level = Logger::DEBUG
+        Log.log_level = Logger::DEBUG
       end
 
       # Help message
@@ -30,12 +35,12 @@ module OptParser
 
     # Starts parser
     begin
-      parser.parse!
+      options[:cmd] = parser.parse!
 
       # Rescue error for invalid option
     rescue OptionParser::MissingArgument => e
-      WorkerLog.log.error e.message
-      WorkerLog.log.error parser
+      Log.log.error e.message
+      Log.log.error parser
       exit
     end
     options

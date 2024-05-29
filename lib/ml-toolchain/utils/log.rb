@@ -2,11 +2,11 @@
 require "logger"
 
 ##
-# @module Log
-# Module for singleton logger instance.
+# @class Log
+# Class for singleton logger instance.
 #
-module Log
-  @log_level = Log::INFO
+class Log
+  @log_level = Logger::INFO
 
   ##
   # Sets the logging level for the logger.
@@ -25,7 +25,7 @@ module Log
   def self.log
     if @logger.nil?
       @logger = Logger.new STDOUT
-      @logger.level = @logger_level
+      @logger.level = @log_level
       @logger.datetime_format = "%Y-%m-%d %H:%M:%S"
     end
     @logger
